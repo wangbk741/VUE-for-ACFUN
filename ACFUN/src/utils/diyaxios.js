@@ -3,7 +3,7 @@ import qs from 'qs'
 axios.defaults.timeout = 8000
 // 带cookie请求
 // axios.defaults.withCredentials = true
-axios.defaults.headers.post['Content-Type']='application/x-www-form-urlencoded'
+// axios.defaults.headers.post['Content-Type']='application/x-www-form-urlencoded'
 // code状态码200判断
 axios.defaults.withCredentials = true
 axios.interceptors.response.use((res) => {

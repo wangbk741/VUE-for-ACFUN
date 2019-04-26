@@ -15,9 +15,9 @@
     </div>
 
       <div class="default-view" >
-        <!-- <keep-alive> -->
+        <keep-alive>
          <router-view></router-view>
-        <!-- </keep-alive> -->
+        </keep-alive>
       </div>
     </div>
 </template>

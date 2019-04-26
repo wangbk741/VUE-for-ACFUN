@@ -155,7 +155,7 @@ export default {
                 })
         },
         loadMore () {
-            console.log('l'+this.pcursor)
+            // console.log('l'+this.pcursor)
             if (this.pcursor!='no_more'){
                 this.loading = true
                 this.$axios.get("/comment/rest/app/comment/list?access_token=&app_version=5.7.0&count=20&market=appstore&origin=ios&pcursor=" + this.pcursor + "&resolution=640x960&showHotComments=1&sourceId=" + this.ACid + "&sourceType=1&sys_name=ios&sys_version=8.4" )

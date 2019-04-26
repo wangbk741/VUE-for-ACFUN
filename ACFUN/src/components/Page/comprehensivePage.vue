@@ -1,7 +1,7 @@
 <template>
         <div class="comprehensivePage"  >
             <div class="inner" ref="mainBox">
-                <div class="NavBar"> 
+                <div class="NavBar" id="Bar" :style="{background:background}"> 
                     <div class="back-icon" @click="back">
                         <img src="../../assets/icon-back-white.svg">
                     </div>
@@ -10,10 +10,11 @@
                     </div>
                 </div>
                 <div class="view-part" v-if="comprehensiveDataCan.length!=0">
-                    <img class="big-image" :src="comprehensiveDataCan.cover">
+                    
                     <div class="mask-view">
                         <span>{{comprehensiveDataCan.title}}</span>
                     </div>
+                    
                     <div class="white-view">
                         <div class="inner-box">
                             <span>更新于:{{comprehensiveDataCan.lastUpdateTime | changeTime}}</span><br>
@@ -28,6 +29,7 @@
                             <span>分享</span>
                         </div>
                     </div>
+                    <img class="big-image" :src="comprehensiveDataCan.cover">
                     <div class="line-part"></div>
                     <div class="up-view">
                         <img :src="comprehensiveDataCan.owner.avatar">
@@ -41,11 +43,11 @@
                 </div > 
                 <div class="nextview-part"  :class="{'is_fixed': isFixed}"> 
                     <mu-tabs :value="activeTab"  @change="handleTabChange">
-                    <mu-tab value="tab1"  title="正片"/>
-                    <mu-tab value="tab2" title="番外篇"/>
+                    <mu-tab :value="index"  :title="item" v-for="(item,index) in titleDataArr" :key="index"/>
                     </mu-tabs>
-                    <div class="slider-view"  ref="viewBox">
-                        <div v-for="item in 100" >{{item}}</div>
+    
+                    <div class="slider-view"  id="viewBox" ref="viewBox">
+                        <div v-for="item in groupsDataCan[groupIndex]" >{{item.subtitle}}</div>
                     </div>
                 </div>
             </div>
@@ -56,13 +58,16 @@ export default {
     data () {
         return {
             comprehensiveDataCan: [],
+            groupsDataCan: [],
+            groupIndex: 0,
+            titleDataArr: [],
             loading: false,
             question: '',
             dataEnd: false,
             ACid: '',
-            activeTab: 'tab1',
+            activeTab: 0,
             isFixed: false,
-
+            opacity: 0
         }
     },
     beforeRouteEnter: (to, from, next) => {
@@ -83,8 +88,17 @@ export default {
                     this.loading = false
                 })
                 .catch(err=>{
-                    console.log(err.data)
+                    // console.log(err.data.vdata.groups[0].contents)
                     this.comprehensiveDataCan = err.data.vdata
+                    var groupNum = err.data.vdata.groups.length
+                    // this.groupsDataCan.push(err.data.vdata.groups)
+                    for (var i=0;i<groupNum;i++){
+                        // console.log(this.groupsDataCan)
+                        // console.log(err.data.vdata.groups[i].contents)
+                        this.groupsDataCan.push(err.data.vdata.groups[i].contents)
+                        this.titleDataArr.push(err.data.vdata.groups[i].groupName)
+                    }
+                    // console.log(this.groupsDataCan)
                     this.loading = false
                 })
            }
@@ -119,10 +133,13 @@ export default {
            }
        },
         back () {
+            this.titleDataArr = []
+            this.groupsDataCan = []
             this.$router.go(-1) 
         },
         handleTabChange (val) {
             this.activeTab = val
+            this.groupIndex = val
         }
     },
     filters: {
@@ -148,8 +165,15 @@ export default {
         this.box.addEventListener('scroll', () => {
             //滚动距离
             let scrollTop = this.$refs.viewBox.scrollTop
+            
             let offsetTop = this.$refs.viewBox.offsetTop
             this.isFixed = scrollTop > 0 ? true : false;
+            if(!this.isFixed){
+                this.opacity = 0
+            }else{
+                this.opacity = 1
+            }
+
             // console.log("scrollTop" + scrollTop)
             // console.log("offsetTop" + offsetTop)
  
@@ -158,6 +182,29 @@ export default {
         this.main.addEventListener('scroll', () => {
             console.log("mainBox" + this.$refs.mainBox.scrollTop)
         })
+    },
+    created:function () {
+        let that = this
+        window.onscroll = function () {
+            
+            if (document.getElementById('Bar')) {
+                // console.log(that.isFixed)
+                if(that.isFixed){
+                    return
+                }
+                that.opacity = window.pageYOffset / document.getElementById('Bar').offsetHeight
+            } else {
+                that.opacity = 0
+            }
+        }
+    },
+    computed: {
+
+      background: function () {
+        // console.log(this.isFixed)
+        return 'rgba(215, 25, 25, '+ this.opacity + ')'
+      }
+
     }
 }
 </script>
@@ -199,14 +246,31 @@ export default {
       width: 100%;
       height: 30rem;
       position: relative;
+      border-bottom: 1px solid rgba(220, 220, 220, 1);
   }
   .slider-view {
       height: 30rem;
       width: 100%;
       overflow: auto;
   }
+  .slider-view div {
+      height: 2rem;
+      line-height: 2rem;
+      font-weight: bold;
+      width: 100%;
+      text-align: center;
+      background-color: rgba(220, 220, 220, 0.5);
+      margin: 10px 5px;
+      overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+        -webkit-box-orient: vertical;
+  }
  .mu-tabs {
      background-color: white;
+     border-bottom: 1px solid rgba(220, 220, 220, 1);
  }
  .mu-tab-link {
      color: black;
@@ -222,7 +286,8 @@ export default {
  .is_fixed{
     position:fixed;
     top: 2.5rem;
-    background-color: yellow;
+    background-color: white;
+    transition:all 0.5s;
   }
   .mask-view {
       width: 100%;
@@ -273,19 +338,14 @@ export default {
         line-clamp: 2;
         -webkit-box-orient: vertical;
   }
-  .up-view {
-      width: 100%;
-      background: white;
-      height: 11rem;
-      position: relative;
-  }
+ 
   .big-image {
       top: 7rem;
       left: 1rem;
       width: 4rem;
       height: 8rem;
       position: absolute;
-      z-index: 1;
+      /* z-index: 1; */
   }
   .up-view {
       padding: 1rem 1rem;
@@ -293,7 +353,9 @@ export default {
       flex-direction: row;
       width: 100%;
       height: 5rem;
-      border-bottom: 1px solid gray;
+      width: 100%;
+      background: white;
+      position: relative;
   }
   .up-view .usename {
       font-weight: bold;

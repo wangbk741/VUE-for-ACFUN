@@ -18,8 +18,7 @@ import SRUP from '@/components/searchRes/SRUP'
 import SRarticle from '@/components/searchRes/SRarticle'
 import articlePage from '@/components/Page/articlePage'
 import comprehensivePage from '@/components/Page/comprehensivePage'
-import addView from '@/components/Page/addView'
-
+import userSpace from '@/components/userSpace/userSpace'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
@@ -75,20 +74,16 @@ const router = new VueRouter({
       path: '/articlePage/:id',
       component: articlePage
     },
-    {
-      name: 'articlePage1',
-      path: '/articlePage/:id',
-      component: articlePage
-    },
+  
     {
       name: 'comprehensivePage',
       path: '/comprehensivePage/:id',
       component: comprehensivePage
     },
     {
-      name: 'addView',
-      path: '/addView/',
-      component: addView
+      name: 'userSpace',
+      path: '/userSpace/:id',
+      component: userSpace
     },
     {
       name: 'searchResult',
@@ -134,14 +129,12 @@ const router = new VueRouter({
         {
           name: 'SRUP',
           path: '/SRUP/',
-          component: SRUP,
-          meta: {keepAlive: false}
+          component: SRUP
         },
         {
           name: 'SRUP1',
           path: '/SRUP1/',
-          component: SRUP,
-          meta: {keepAlive: false}
+          component: SRUP
         },
         {
           name: 'SRarticle',

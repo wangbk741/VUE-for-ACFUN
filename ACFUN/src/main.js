@@ -35,7 +35,49 @@ Axios.defaults.headers['market'] = 'appstore'
 Axios.defaults.headers['productId'] = '2000'
 Vue.config.productionTip = false
 router.afterEach((to,from,next) => {
-  window.scrollTo(0,0);
+  // console.log("to:" + to.path)
+  var pathTo = to.path
+  // console.log("from:"+from.path)
+  // console.log('next:'+next.path)
+
+  switch (pathTo) {
+    case "/SRvideo":
+      window.scrollTo(0,0);
+      break;
+    case "/SRvideo1":
+      window.scrollTo(0,0);
+      break;
+    case "/SRanime":
+      window.scrollTo(0,0);
+      break;
+    case "/SRanime1":
+      window.scrollTo(0,0);
+      break;
+    case "/SRcomprehensive":
+      window.scrollTo(0,0);
+      break;
+    case "/SRcomprehensive1":
+      window.scrollTo(0,0);
+      break;
+    case "/SRUP":
+      window.scrollTo(0,0);
+      break;
+    case "/SRUP1":
+      window.scrollTo(0,0);
+      break;
+    case "/SRarticle":
+      window.scrollTo(0,0);
+      break;
+    case "/SRarticle1":
+      window.scrollTo(0,0);
+      break;
+    case "/articlePage":
+      window.scrollTo(0,0);
+      break;
+
+    default:
+      break;
+  }
 });
 /* eslint-disable no-new */
 new Vue({
